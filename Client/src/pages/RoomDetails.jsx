@@ -48,7 +48,7 @@ const RoomDetails = () => {
                 </div>
                 <div className='grid grid-cols-2 gap-4 lg:w-1/2 w-full'>
                     {room?.images.length > 1 && room.images.map((image, index) => (
-                        <img onClick={() => setMainImage(image)} key={index} src={image} alt="Room Image" className={`w-full rounded-xl shadow-md object-cover cursor-pointer ${mainImage === image && 'outline-3 outline-orange-500'}`} />
+                        <img onClick={() => setMainImage(image )} key={index} src={image} alt="Room Image" className={`w-full rounded-xl shadow-md object-cover cursor-pointer ${mainImage === image && 'outline-3 outline-orange-500'}`} />
                     ))}
                 </div>
             </div>
@@ -64,13 +64,11 @@ const RoomDetails = () => {
                         {room.amenities.map((item, index) => (
                             <div
                                 key={index}
-                                className='flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100'
-                            >
+                                className='flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100'>
                                 <img
                                     src={facilityIcons[item]}
                                     alt={item}
-                                    className='w-5 h-5'
-                                />
+                                    className='w-5 h-5'/>
                                 <p className='text-xs'>{item}</p>
                             </div>
                         ))}

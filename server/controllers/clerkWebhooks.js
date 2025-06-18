@@ -2,6 +2,8 @@ import User from "../models/User.js";
 import { Webhook } from "svix";
 
 const clerkWebHook = async (req,res) => {
+
+  console.log(req)
   try {
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
     const headers = {
@@ -10,7 +12,7 @@ const clerkWebHook = async (req,res) => {
       "svix-signature": req.headers["svix-signature"],
     };
 
-    // Vedrifying Headers
+    // Verifying Headers
     await whook.verify(JSON.stringify(req.body), headers);
 
     //Getting Data form Req body
@@ -23,6 +25,7 @@ const clerkWebHook = async (req,res) => {
       username: data.first_name + " " + data.last_name,
       image: data.image_url,
     };
+
 
     //Switch Case for different Events
     switch (type) {
