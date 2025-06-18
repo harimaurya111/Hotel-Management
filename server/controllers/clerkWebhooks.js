@@ -1,9 +1,8 @@
 import User from "../models/User.js";
 import { Webhook } from "svix";
 
-const clerkWebHook = async (req,res) => {
-
-  console.log(req)
+const clerkWebHook = async (req, res) => {
+  console.log(req.body);
   try {
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
     const headers = {
@@ -16,16 +15,13 @@ const clerkWebHook = async (req,res) => {
     await whook.verify(JSON.stringify(req.body), headers);
 
     //Getting Data form Req body
-
     const { data, type } = req.body;
-
     const userData = {
       _id: data.id,
       email: data.email_addresses[0].email_address,
       username: data.first_name + " " + data.last_name,
       image: data.image_url,
     };
-
 
     //Switch Case for different Events
     switch (type) {
@@ -34,7 +30,10 @@ const clerkWebHook = async (req,res) => {
         break;
       }
       case "user.updated": {
-        await User.findByIdAndUpdate(data.id, userData);
+        const existing = await User.findById(data.id);
+        if (existing) {
+          await User.findByIdAndUpdate(data.id, userData);
+        }
         break;
       }
       case "user.deleted": {
@@ -45,12 +44,11 @@ const clerkWebHook = async (req,res) => {
       default:
         break;
     }
-    res.json({success:true,message:"Webhook recived"})
+    res.json({ success: true, message: "Webhook recived" });
   } catch (error) {
-    console.log(error.message)
-    res.json({success:false,message: error.message})
+    console.log(error.message);
+    res.json({ success: false, message: error.message });
   }
 };
 
-
-export default clerkWebHook
+export default clerkWebHook;
