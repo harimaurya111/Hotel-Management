@@ -13,8 +13,6 @@ export const AppProvider = ({ children }) => {
     const { user } = useUser()
     const { getToken } = useAuth()
 
-    console.log(user)
-
     const [isOwner, setIsOwner] = useState(false)
     const [showHotelReg, setShowHotelReg] = useState(false)
     const [searchCities, setSearchCities] = useState([])
@@ -27,12 +25,10 @@ export const AppProvider = ({ children }) => {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(await getToken())
             if (data.success) {
                 setIsOwner(data.role === "hotelOwner")
                 setSearchCities(data.recentSearchedCities)
             } else {
-                // Retry Fetching user details after 5 second
                 setTimeout(() => {
                     fetchUser()
                 }, 5000);

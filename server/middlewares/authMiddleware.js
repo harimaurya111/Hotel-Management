@@ -2,6 +2,7 @@ import { getAuth } from "@clerk/express";
 import User from "../models/User.js";
 
 export const protect = async (req, res, next) => {
+
   try {
     const { userId } = getAuth(req);
     if (!userId) {
