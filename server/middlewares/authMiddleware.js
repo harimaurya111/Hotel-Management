@@ -5,6 +5,9 @@ export const protect = async (req, res, next) => {
 
   try {
     const { userId } = getAuth(req);
+    // console.log("userId:", userId); // 👈 check this
+    // console.log("Authorization header:", req.headers.authorization);
+
     if (!userId) {
       return res
         .status(401)
@@ -18,6 +21,8 @@ export const protect = async (req, res, next) => {
         .json({ success: false, message: "User not found" });
     }
     req.user = user;
+   req.auth = { userId };
+
     next();
   } catch (error) {
     console.error("Authentication error:", error);

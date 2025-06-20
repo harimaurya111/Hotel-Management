@@ -25,9 +25,7 @@ const Navbar = () => {
 
     const { user, navigate, isOwner, setShowHotelReg } = useAppContext()
 
-
     useEffect(() => {
-        console.log("hello")
         if (location.pathname !== "/") {
             setIsScrolled(true)
             return

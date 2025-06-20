@@ -11,30 +11,36 @@ const HotelReg = () => {
     const [contact, setContact] = useState("")
     const [city, setCity] = useState("")
 
-    const handleOnSubmit = async (event) => {
-        try {
-            event.preventDefault()
-            const { data } = await axios.post("/api/hotels", { name, address, contact, city }, { headers: { Authorization: `Bearer ${getToken()}` }})
-            console.log(data)
-            if (data.success) {
-                toast.success(data.message)
-                setIsOwner(true)
-                setShowHotelReg(false)
-            } else {
-                toast.error(data.message)
-            }
-        } catch (error) {
-                toast.error(error.message)
-        }
-    }
+const handleOnSubmit = async (event) => {
+  event.preventDefault();
+  try {
+    const token = await getToken();
+    const { data } = await axios.post("/api/hotels", {
+      name, address, contact, city
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
 
+    if (data.success) {
+      toast.success(data.message);
+      setIsOwner(true);
+      setShowHotelReg(false);
+    } else {
+      toast.error(data.message);
+    }
+  } catch (error) {
+    console.error("Hotel registration error:", error);
+    toast.error(error.response?.data?.message || error.message);
+  }
+};
 
 
     return (
         <div onClick={() => setShowHotelReg(false)} className='fixed top-0 bottom-0 left-0 right-0 z-100 flex items-center justify-center bg-black/70'>
             <form onSubmit={handleOnSubmit} onClick={(e) => e.stopPropagation()} className='flex bg-white rounded-xl max-w-4xl max-md:mx-2'>
                 <img src={assets.regImage} alt="reg-image" className='w-1/2 rounded-xl hidden md:block' />
-
                 <div className='relative flex flex-col items-center md:w-1/2 p-8 md:p-10'>
                     <img
                         src={assets.closeIcon}
@@ -80,10 +86,9 @@ const HotelReg = () => {
                         </select>
                     </div>
 
-                    <button className='bg-indigo-500 hover:bg-indigo-600 transition-all text-white mr-auto px-6 py-2 rounded cursor-pointer mt-6'>
+                    <button type='submit' className='bg-indigo-500 hover:bg-indigo-600 transition-all text-white mr-auto px-6 py-2 rounded cursor-pointer mt-6'>
                         Submit
                     </button>
-
                 </div>
             </form>
         </div>

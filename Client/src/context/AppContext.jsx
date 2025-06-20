@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom"
 import { useUser, useAuth } from "@clerk/clerk-react"
 import toast from "react-hot-toast";
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL
-
 const AppContext = createContext()
 
 export const AppProvider = ({ children }) => {
@@ -16,6 +15,7 @@ export const AppProvider = ({ children }) => {
     const [isOwner, setIsOwner] = useState(false)
     const [showHotelReg, setShowHotelReg] = useState(false)
     const [searchCities, setSearchCities] = useState([])
+    const [rooms,setRooms] = useState([])
 
     const fetchUser = async () => {
         try {
@@ -38,6 +38,19 @@ export const AppProvider = ({ children }) => {
         }
     }
 
+    const fetchRooms = async () => {
+        try {
+            const {data} = await axios.get("/api/rooms")
+            if(data.success){
+                setRooms(data.rooms)
+            }else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
 
     useEffect(() => {
         if (user) {
@@ -45,8 +58,12 @@ export const AppProvider = ({ children }) => {
         }
     }, [user])
 
+    useEffect(()=>{
+        fetchRooms()
+    },[])
 
-    const value = { currency, navigate, user, getToken, axios, isOwner, setIsOwner, showHotelReg, setShowHotelReg, setSearchCities, searchCities }
+
+    const value = { currency, navigate, user, getToken, axios, isOwner, setIsOwner, showHotelReg, setShowHotelReg, setSearchCities, searchCities, rooms, setRooms }
     return (
         <AppContext.Provider value={value}>
             {children}

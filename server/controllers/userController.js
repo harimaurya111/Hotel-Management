@@ -1,34 +1,37 @@
-
-//Get /api/user
+// GET /api/user
 export const getUserData = async (req, res) => {
   try {
     const role = req.user.role;
-    console.log(role)
     const recentSearchedCities = req.user.recentSearchedCities;
-    res.json({ success: true, role, recentSearchedCities });
+
+    res.status(200).json({ success: true, role, recentSearchedCities });
   } catch (error) {
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-//Store User Recent Search Cities
+// POST /api/user/recent-search
 export const storeRecentSearchedCities = async (req, res) => {
   try {
     const user = req.user;
     const { recentSearchedCity } = req.body;
 
+    if (!recentSearchedCity) {
+      return res.status(400).json({ success: false, message: "City is required" });
+    }
+
+    // Maintain max 3 cities
     if (user.recentSearchedCities.length < 3) {
       user.recentSearchedCities.push(recentSearchedCity);
     } else {
-      user.recentSearchedCities.shift();
+      user.recentSearchedCities.shift(); // remove oldest
       user.recentSearchedCities.push(recentSearchedCity);
     }
 
     await user.save();
 
-    res.json({ success: true, message: "City Added" });
+    res.status(200).json({ success: true, message: "City added successfully" });
   } catch (error) {
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
-
